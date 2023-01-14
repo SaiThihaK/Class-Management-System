@@ -1,3 +1,4 @@
+import e from "express";
 import { db } from "../db.js";
 
 export const getClasses = (req, res) => {
@@ -8,10 +9,19 @@ export const getClasses = (req, res) => {
   });
 };
 
+export const getClassDetail = (req, res) => {
+  const class_id = req.params.id;
+  const query = "SELECT * from class WHERE class_id = ?";
+  db.query(query, [class_id], (err, data) => {
+    if (err) res.json(err);
+    else res.json(data);
+  });
+};
+
 export const createClasses = (req, res) => {
   const q = `INSERT INTO class(class_name,students) VALUE(?)`;
-
   const value = [req.body.class_name, req.body.students];
+  console.log("value", value);
 
   db.query(q, [value], (err, data) => {
     if (err) return res.json(err);
@@ -25,11 +35,15 @@ export const upDateClass = (req, res) => {
   const value = [req.body.class_name, req.body.students];
   db.query(q, [...value, class_id], (err, data) => {
     if (err) res.json(err);
-    else res.json(data);
+    else res.json("Update successfully");
   });
 };
 
-// const deleteClass = (req,res)=>{
-//     const class_id = req.body.class_id;
-//     const q =
-// }
+export const deleteClass = (req, res) => {
+  const class_id = req.params.id;
+  const q = "DELETE FROM CLASS WHERE class_id = ?";
+  db.query(q, [class_id], (err, data) => {
+    if (err) res.json(err);
+    else res.json("Delete Successfully");
+  });
+};
